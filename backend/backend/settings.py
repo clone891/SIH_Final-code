@@ -1,7 +1,7 @@
 
 
 from pathlib import Path
-
+import os 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -72,8 +72,15 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'myproject',       # Your database name
+        'USER': 'myuser',          # Your MySQL username
+        'PASSWORD': 'mypassword',  # Your MySQL password
+        'HOST': 'localhost',       # Or IP address of DB server
+        'PORT': '3306',            # Default MySQL port
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
 
@@ -124,9 +131,21 @@ AUTH_USER_MODEL = "accounts.User"   # we’ll create a custom user
 SITE_ID = 1
 
 
+
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     )
 }
+
+DJOSER = {
+    'LOGIN_FIELD': 'username',
+}
+
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")

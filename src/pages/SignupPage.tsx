@@ -37,24 +37,55 @@ export default function SignupPage() {
   })
 
   const onSubmit = async (values: FormValues) => {
-  setSubmitting(true)
+  setSubmitting(true);
   try {
-    await signup({
-      username: values.username,
-      firstName: values.firstName,   // <-- camelCase
-      lastName: values.lastName,     // <-- camelCase
-      email: values.email,
-      password: values.password,
-      confirm: values.confirm,
-    })
-    toast.success("Account created")
-    navigate("/profile")
+    // Step 1: Register user
+    const registerRes = await fetch("http://127.0.0.1:8000/api/auth/register/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: values.username,
+        firstName: values.firstName,  // backend maps this to first_name
+        lastName: values.lastName,    // backend maps this to last_name
+        email: values.email,
+        password: values.password,
+        confirm: values.confirm,
+      }),
+    });
+
+    if (!registerRes.ok) {
+      const errData = await registerRes.json();
+      throw new Error(errData?.detail || "Signup failed");
+    }
+
+    // Step 2: Auto login user after signup
+    const loginRes = await fetch("http://127.0.0.1:8000/api/auth/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: values.username,
+        password: values.password,
+      }),
+    });
+
+    if (!loginRes.ok) {
+      throw new Error("Account created but login failed. Please try logging in.");
+    }
+
+    const loginData = await loginRes.json();
+
+    // Step 3: Store JWT tokens
+    localStorage.setItem("access", loginData.access);
+    localStorage.setItem("refresh", loginData.refresh);
+
+    toast.success("Account created");
+    navigate("/profile");
   } catch (e: any) {
-    toast.error(e?.message || "Signup failed")
+    toast.error(e?.message || "Signup failed");
   } finally {
-    setSubmitting(false)
+    setSubmitting(false);
   }
-}
+};
 
 
   return (

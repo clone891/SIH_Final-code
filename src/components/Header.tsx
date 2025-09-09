@@ -1,4 +1,4 @@
-import { Moon, Sun, Menu, X, LogOut } from "lucide-react"
+import { Moon, Sun, Menu, X, LogOut, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "./ThemeProvider"
 import { motion } from "framer-motion"
@@ -17,6 +17,32 @@ export function Header({ isSidebarVisible, toggleSidebar }: HeaderProps) {
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light")
+  }
+
+  // Helper function to get display name
+  const getDisplayName = () => {
+    if (user?.username) return user.username
+    if (user?.name) return user.name
+    if (user?.email) return user.email.split('@')[0] // Use part before @ as fallback
+    return "User"
+  }
+
+  // Helper function to get avatar initials
+  const getAvatarInitials = () => {
+    const displayName = getDisplayName()
+    if (user?.username) {
+      // For username, take first 2 characters
+      return user.username.slice(0, 2).toUpperCase()
+    }
+    if (user?.name) {
+      // For full name, take first letter of each word
+      return user.name.split(" ").map((word: string) => word[0]).join("").slice(0, 2).toUpperCase()
+    }
+    if (user?.email) {
+      // For email, take first 2 characters before @
+      return user.email.split('@')[0].slice(0, 2).toUpperCase()
+    }
+    return "U"
   }
 
   return (
@@ -124,19 +150,27 @@ export function Header({ isSidebarVisible, toggleSidebar }: HeaderProps) {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 shadow">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 shadow hover:bg-white/90 transition-all duration-200 cursor-pointer"
+                 onClick={() => window.location.href = "/profile"}>
               <Avatar className="h-8 w-8">
-                <AvatarFallback>
-                  {String(user?.name || user?.email || "U").split(" ").map((s: string) => s[0]).join("")?.slice(0,2).toUpperCase()}
+                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+                  {getAvatarInitials()}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium text-gray-800 hidden md:inline-block max-w-[180px] truncate">
-                {user?.name || user?.email || "Account"}
-              </span>
+              <div className="flex flex-col justify-center min-w-0">
+                <span className="text-sm font-medium text-gray-800 hidden md:inline-block max-w-[180px] truncate">
+                  @{getDisplayName()}
+                </span>
+                {user?.name && user?.username && (
+                  <span className="text-xs text-gray-500 hidden lg:inline-block max-w-[180px] truncate">
+                    {user.name}
+                  </span>
+                )}
+              </div>
             </div>
-            <Button variant="ghost" className="rounded-xl" onClick={logout}>
+            <Button variant="ghost" className="rounded-xl hover:bg-white/20" onClick={logout}>
               <LogOut className="h-4 w-4 mr-1" />
-              Logout
+              <span className="hidden sm:inline">Logout</span>
             </Button>
           </div>
         )}

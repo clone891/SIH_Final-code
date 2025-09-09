@@ -12,7 +12,7 @@ import { motion } from "framer-motion"
 import { ArrowLeft } from "lucide-react"
 
 const schema = z.object({
-  email: z.string().email("Enter a valid email"),
+  username: z.string().min(3, "Username must be at least 3 characters"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 })
 
@@ -57,9 +57,9 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@example.com" {...register("email")} />
-            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+            <Label htmlFor="username">Username</Label>
+            <Input id="username" type="text" placeholder="your username" {...register("username")} />
+            {errors.username && <p className="text-sm text-destructive">{errors.username.message}</p>}
           </div>
 
           <div className="space-y-2">
