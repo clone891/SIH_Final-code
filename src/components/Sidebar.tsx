@@ -1,16 +1,18 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { NavLink, useLocation } from "react-router-dom"
-import { 
-  MessageCircle, 
-  AlertTriangle, 
-  TrendingUp, 
-  Calendar, 
-  Heart, 
-  Users, 
-  HelpCircle, 
-  FileText, 
-  User
+import {
+  MessageCircle,
+  AlertTriangle,
+  TrendingUp,
+  Calendar,
+  Heart,
+  Users,
+  HelpCircle,
+  FileText,
+  User,
+  Gamepad2,
+  MessageSquare
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -22,7 +24,9 @@ const navigationItems = [
   { id: "wellness", path: "/wellness", icon: Heart, label: "Wellness Hub" },
   { id: "support", path: "/support", icon: Users, label: "Peer Support Form" },
   { id: "help", path: "/help", icon: HelpCircle, label: "Health and Support" },
+  { id: "community", path: "/community", icon: MessageSquare, label: "Community" },
   { id: "summary", path: "/summary", icon: FileText, label: "Chat Summary" },
+  { id: "gamified-dashboard", path: "/gamified-dashboard", icon: Gamepad2, label: "Gamified Dashboard" },
   { id: "profile", path: "/profile", icon: User, label: "Profile" },
 ]
 
