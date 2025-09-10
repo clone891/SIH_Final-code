@@ -21,6 +21,7 @@ import SupportPage from "./pages/SupportPage";
 import HelpPage from "./pages/HelpPage";
 import SummaryPage from "./pages/SummaryPage";
 import ProfilePage from "./pages/ProfilePage";
+import GamifiedDashboardPage from "./pages/GamifiedDashboardPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
                   <Route path="/support" element={<SupportPage />} />
                   <Route path="/help" element={<HelpPage />} />
                   <Route path="/summary" element={<SummaryPage />} />
+                  <Route path="/gamified-dashboard" element={<GamifiedDashboardPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
