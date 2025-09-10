@@ -276,17 +276,17 @@ const GamifiedDashboardPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-center min-h-[220px]">
                     <motion.div
                       aria-label="Breathing pacer"
-                      className={`h-40 w-40 rounded-full flex items-center justify-center text-lg font-semibold select-none shadow-inner ${
+                      className={`h-40 w-40 rounded-full relative overflow-hidden flex items-center justify-center text-base md:text-lg font-semibold select-none shadow-inner ${
                         phase === "inhale" ? "bg-green-500/20 text-green-700" : phase === "hold" ? "bg-blue-500/20 text-blue-700" : phase === "exhale" ? "bg-purple-500/20 text-purple-700" : "bg-muted text-muted-foreground"
                       }`}
                       style={{ scale: pacerScale }}
                     >
-                      <div className="text-center">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3 leading-tight whitespace-nowrap pointer-events-none">
                         <div>{phaseLabel}</div>
-                        {running && <div className="text-sm opacity-80">{secondsLeft.toFixed(1)}s</div>}
+                        {running && <div className="text-xs md:text-sm opacity-80 mt-0.5">{secondsLeft.toFixed(1)}s</div>}
                       </div>
                     </motion.div>
                   </div>
