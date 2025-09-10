@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Gamepad2, Wind, Trophy, Smile, Meh, Frown, Heart } from "lucide-react";
+import { Gamepad2, Wind, Trophy, Heart, Brain, MousePointerClick, Timer } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -23,13 +23,11 @@ const GamifiedDashboardPage = () => {
   const targetEndRef = useRef<number | null>(null);
   const currentPhaseDurationRef = useRef<number>(0);
 
-  // Load best streak
   useEffect(() => {
     const stored = localStorage.getItem("breathing_best_streak");
     if (stored) setBestStreak(Number(stored));
   }, []);
 
-  // Helper to clear timer
   const clearTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -57,7 +55,6 @@ const GamifiedDashboardPage = () => {
     });
     setTimeout(() => {
       setCycles((c) => {
-        // Count a full cycle at the moment we transition from exhale -> inhale
         if (phase === "exhale") {
           const next = c + 1;
           if (next > bestStreak) {
@@ -74,7 +71,7 @@ const GamifiedDashboardPage = () => {
   const tick = () => {
     if (!running || !targetEndRef.current) return;
     const remaining = Math.max(0, targetEndRef.current - performance.now());
-    const sec = Math.ceil(remaining / 100) / 10; // 0.1s precision
+    const sec = Math.ceil(remaining / 100) / 10;
     setSecondsLeft(parseFloat(sec.toFixed(1)));
     if (remaining <= 0) {
       advance();
@@ -83,7 +80,6 @@ const GamifiedDashboardPage = () => {
 
   useEffect(() => {
     if (!running) return;
-    // Reset target when phase changes
     goToPhase(phase === "idle" ? "inhale" : phase);
     clearTimer();
     timerRef.current = window.setInterval(tick, 100);
@@ -131,17 +127,127 @@ const GamifiedDashboardPage = () => {
     return 1;
   }, [phase, phaseProgress]);
 
-  // Mood check-in mini activity
-  type Mood = "Great" | "Okay" | "Low";
-  const [lastMood, setLastMood] = useState<{ mood: Mood; ts: number } | null>(null);
-  useEffect(() => {
-    const raw = localStorage.getItem("mood_last");
-    if (raw) setLastMood(JSON.parse(raw));
-  }, []);
-  const saveMood = (mood: Mood) => {
-    const entry = { mood, ts: Date.now() };
-    localStorage.setItem("mood_last", JSON.stringify(entry));
-    setLastMood(entry);
+  // Mindful Tap game (tap only when green)
+  type TapState = "idle" | "playing" | "ended";
+  const [tapState, setTapState] = useState<TapState>("idle");
+  const [cue, setCue] = useState<"green" | "red">("red");
+  const [score, setScore] = useState(0);
+  const [tapTimeLeft, setTapTimeLeft] = useState(30);
+  const [tapBest, setTapBest] = useState<number>(() => Number(localStorage.getItem("mindful_tap_best") || 0));
+  const cueTimerRef = useRef<number | null>(null);
+  const gameTimerRef = useRef<number | null>(null);
+
+  const stopTapTimers = () => {
+    if (cueTimerRef.current) clearInterval(cueTimerRef.current);
+    if (gameTimerRef.current) clearInterval(gameTimerRef.current);
+    cueTimerRef.current = null;
+    gameTimerRef.current = null;
+  };
+
+  const startTap = () => {
+    stopTapTimers();
+    setTapState("playing");
+    setScore(0);
+    setTapTimeLeft(30);
+    setCue(Math.random() < 0.5 ? "green" : "red");
+    cueTimerRef.current = window.setInterval(() => {
+      setCue(Math.random() < 0.5 ? "green" : "red");
+    }, 700);
+    gameTimerRef.current = window.setInterval(() => {
+      setTapTimeLeft((s) => {
+        if (s <= 1) {
+          const finalScore = score;
+          const best = Number(localStorage.getItem("mindful_tap_best") || 0);
+          if (finalScore > best) {
+            localStorage.setItem("mindful_tap_best", String(finalScore));
+            setTapBest(finalScore);
+          }
+          setTapState("ended");
+          stopTapTimers();
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+  };
+
+  const tapAreaClick = () => {
+    if (tapState !== "playing") return;
+    if (cue === "green") setScore((v) => v + 1);
+    else setScore((v) => Math.max(0, v - 1));
+  };
+
+  useEffect(() => () => stopTapTimers(), []);
+
+  // Sequence Memory (Simon-lite)
+  const COLORS = ["bg-blue-500", "bg-yellow-500", "bg-pink-500"] as const;
+  const [seq, setSeq] = useState<number[]>([]);
+  const [playback, setPlayback] = useState(false);
+  const [activeIdx, setActiveIdx] = useState<number | null>(null);
+  const [inputPos, setInputPos] = useState(0);
+  const [round, setRound] = useState(0);
+  const [bestRound, setBestRound] = useState<number>(() => Number(localStorage.getItem("memory_best") || 0));
+  const playbackRef = useRef<number | null>(null);
+
+  const startMemory = () => {
+    stopMemoryPlayback();
+    const first = Math.floor(Math.random() * COLORS.length);
+    setSeq([first]);
+    setRound(0);
+    setInputPos(0);
+    setTimeout(() => playSequence([first]), 200);
+  };
+
+  const stopMemoryPlayback = () => {
+    if (playbackRef.current) {
+      clearInterval(playbackRef.current);
+      playbackRef.current = null;
+    }
+  };
+
+  const playSequence = (sequence: number[]) => {
+    setPlayback(true);
+    let i = 0;
+    playbackRef.current = window.setInterval(() => {
+      setActiveIdx(sequence[i]);
+      setTimeout(() => setActiveIdx(null), 350);
+      i += 1;
+      if (i >= sequence.length) {
+        stopMemoryPlayback();
+        setPlayback(false);
+      }
+    }, 600);
+  };
+
+  const extendSequence = () => {
+    const next = Math.floor(Math.random() * COLORS.length);
+    const newSeq = [...seq, next];
+    setSeq(newSeq);
+    setInputPos(0);
+    setTimeout(() => playSequence(newSeq), 300);
+  };
+
+  const selectColor = (idx: number) => {
+    if (playback || !seq.length) return;
+    const expected = seq[inputPos];
+    if (idx === expected) {
+      const nextPos = inputPos + 1;
+      if (nextPos === seq.length) {
+        const nextRound = round + 1;
+        setRound(nextRound);
+        if (nextRound > bestRound) {
+          setBestRound(nextRound);
+          localStorage.setItem("memory_best", String(nextRound));
+        }
+        extendSequence();
+      } else {
+        setInputPos(nextPos);
+      }
+    } else {
+      // wrong
+      setSeq([]);
+      setInputPos(0);
+    }
   };
 
   return (
@@ -155,11 +261,11 @@ const GamifiedDashboardPage = () => {
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
             <Gamepad2 className="h-14 w-14 text-primary mx-auto mb-3" />
             <h1 className="text-3xl font-bold text-foreground">Gamified Dashboard</h1>
-            <p className="text-muted-foreground">Calming, science-backed mini‑activities to support your mental well‑being.</p>
+            <p className="text-muted-foreground">Calming, focus‑building mini‑games to support your mental well‑being.</p>
           </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Breathing Pacer */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card>
@@ -204,32 +310,70 @@ const GamifiedDashboardPage = () => {
             </Card>
           </motion.div>
 
-          {/* Mood Check-in */}
+          {/* Mindful Tap */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Smile className="h-5 w-5" /> Mood Check‑in
+                  <MousePointerClick className="h-5 w-5" /> Mindful Tap
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1" onClick={() => saveMood("Great")}>
-                      <Smile className="h-4 w-4 mr-2 text-green-600" /> Great
-                    </Button>
-                    <Button variant="outline" className="flex-1" onClick={() => saveMood("Okay")}>
-                      <Meh className="h-4 w-4 mr-2 text-yellow-600" /> Okay
-                    </Button>
-                    <Button variant="outline" className="flex-1" onClick={() => saveMood("Low")}>
-                      <Frown className="h-4 w-4 mr-2 text-blue-600" /> Low
-                    </Button>
+                  <div
+                    className={`h-32 rounded-xl flex items-center justify-center text-lg font-semibold select-none transition-colors cursor-pointer ${
+                      cue === "green" ? "bg-green-500/20 text-green-700" : "bg-red-500/20 text-red-700"
+                    }`}
+                    onClick={tapAreaClick}
+                  >
+                    {tapState === "playing" ? (cue === "green" ? "Tap now" : "Wait") : tapState === "ended" ? "Time's up" : "Press Start"}
                   </div>
-                  {lastMood && (
-                    <div className="text-sm text-muted-foreground">
-                      Last check‑in: {lastMood.mood} • {new Date(lastMood.ts).toLocaleString()}
+                  <div className="flex items-center gap-3">
+                    {tapState !== "playing" ? (
+                      <Button onClick={startTap}>Start</Button>
+                    ) : (
+                      <Button variant="secondary" onClick={() => { setTapState("ended"); stopTapTimers(); }}>Stop</Button>
+                    )}
+                    <div className="ml-auto flex items-center gap-3 text-sm">
+                      <Timer className="h-4 w-4" /> {tapTimeLeft}s
+                      <span>Score: {score}</span>
+                      <span>Best: {tapBest}</span>
                     </div>
-                  )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Sequence Memory */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="h-5 w-5" /> Sequence Memory
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-3 gap-2">
+                    {COLORS.map((c, i) => (
+                      <button
+                        key={i}
+                        className={`h-16 rounded-xl transition-opacity focus:outline-none focus:ring-2 focus:ring-ring ${c} ${
+                          activeIdx === i ? "opacity-100" : "opacity-60 hover:opacity-90"
+                        }`}
+                        onClick={() => selectColor(i)}
+                        aria-label={`color-${i}`}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Button onClick={startMemory}>Start</Button>
+                    <div className="ml-auto text-sm flex items-center gap-3">
+                      <span>Round: {round}</span>
+                      <span>Best: {bestRound}</span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
