@@ -1,0 +1,321 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mental Health App Design System - Calming light purple theme with therapeutic aesthetics */
+
+@layer base {
+  :root {
+    /* Mental Health Light Purple Gradient Palette */
+    --background: 270 25% 96%; /* Base light purple background */
+    --foreground: 0 0% 13%; /* Dark text for contrast (rgb(34,34,34)) */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 13%;
+
+    /* Primary - Light Purple/Lavender */
+    --primary: 270 35% 84%; /* Light purple */
+    --primary-foreground: 0 0% 13%;
+    --primary-glow: 270 40% 80%; /* Slightly more saturated purple */
+
+    /* Secondary - Soft Lilac */
+    --secondary: 280 60% 85%; /* Soft lilac */
+    --secondary-foreground: 0 0% 13%;
+
+    --muted: 270 20% 90%;
+    --muted-foreground: 270 15% 40%;
+
+    /* Accent - Soft Periwinkle */
+    --accent: 260 40% 80%; /* Soft periwinkle */
+    --accent-foreground: 0 0% 13%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 270 20% 85%;
+    --input: 270 20% 85%;
+    --ring: 270 35% 84%;
+
+    --radius: 1rem;
+
+    /* Chat-specific gradients */
+    --chat-bot-bg: linear-gradient(135deg, rgb(189,184,255), rgb(200,185,230)); /* Pastel Blue-Purple → Light Purple */
+    --chat-user-bg: linear-gradient(135deg, rgb(178,170,226), rgb(200,185,230)); /* Soft Purple → Light Purple */
+    --chat-input-bg: 0 0% 100%;
+
+    /* Main Background Gradient: Light Purple → Soft Purple → Pastel Blue-Purple */
+    --gradient-main: linear-gradient(135deg, rgb(200,185,230), rgb(178,170,226), rgb(189,184,255));
+
+    /* Primary Button Gradient: Light Purple → Lilac */
+    --gradient-primary: linear-gradient(135deg, rgb(200,185,230), rgb(208,192,240));
+
+    /* Card/Panel Gradient: White → Pastel Light Purple */
+    --gradient-card: linear-gradient(135deg, rgb(255,255,255), rgb(200,185,230));
+
+    /* Sidebar Gradient */
+    --gradient-sidebar: linear-gradient(135deg, rgb(255,255,255), rgb(200,185,230));
+
+    /* Accent Gradient: Gentle Purple-Pink */
+    --gradient-accent: linear-gradient(135deg, rgb(255,196,249), rgb(208,192,240));
+
+    /* Hover State: Slightly darker pastel purple */
+    --gradient-hover: linear-gradient(135deg, rgb(178,170,226), rgb(192,180,235));
+
+    /* Button Background: Visible purple for buttons */
+    --button-bg: rgb(180, 165, 220); /* Visible light purple for buttons */
+    --button-bg-hover: rgb(160, 145, 200); /* Darker purple for hover */
+
+    /* Shadows */
+    --shadow-soft: 0 2px 10px -2px rgba(34, 34, 34, 0.08);
+    --shadow-medium: 0 4px 20px -4px rgba(34, 34, 34, 0.12);
+    --shadow-chat: 0 1px 8px -1px rgba(34, 34, 34, 0.1);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Cursor-responsive gradient variables */
+    --cursor-x: 50%;
+    --cursor-y: 50%;
+
+    --sidebar-background: 270 25% 96%;
+    --sidebar-foreground: 0 0% 13%;
+    --sidebar-primary: 270 35% 84%;
+    --sidebar-primary-foreground: 0 0% 13%;
+    --sidebar-accent: 280 60% 85%;
+    --sidebar-accent-foreground: 0 0% 13%;
+    --sidebar-border: 270 20% 85%;
+    --sidebar-ring: 270 35% 84%;
+  }
+
+  .dark {
+   /* Dark mode - Adapted Purple Theme */
+    --background: 270 15% 12%;   /* Dark purple background */
+    --foreground: 270 20% 85%;   /* Light purple text */
+
+    --card: 270 10% 15%;         /* Dark purple cards */
+    --card-foreground: 270 20% 85%;
+
+    --popover: 270 10% 15%;
+    --popover-foreground: 270 20% 85%;
+
+    /* Primary - Darker Purple */
+    --primary: 270 25% 45%;      /* Darker purple for dark mode */
+    --primary-foreground: 270 20% 85%;
+    --primary-glow: 270 30% 55%;
+
+    /* Secondary - Darker Lilac */
+    --secondary: 280 30% 25%;
+    --secondary-foreground: 270 20% 85%;
+
+    --muted: 270 10% 20%;
+    --muted-foreground: 270 15% 65%;
+
+    /* Accent - Darker Periwinkle */
+    --accent: 260 25% 35%;
+    --accent-foreground: 270 20% 85%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 270 20% 85%;
+
+    --border: 270 15% 25%;
+    --input: 270 15% 25%;
+    --ring: 270 25% 45%;
+
+    /* Button Background: Visible purple for dark mode buttons */
+    --button-bg: rgb(90, 75, 130); /* Visible dark purple for buttons */
+    --button-bg-hover: rgb(110, 95, 150); /* Lighter purple for hover in dark mode */
+
+    /* Dark chat colors - adapted gradients */
+    --chat-bot-bg: linear-gradient(135deg, rgba(89,84,155,0.8), rgba(100,85,130,0.8)); /* Darker pastel purple → dark purple */
+    --chat-user-bg: linear-gradient(135deg, rgba(78,70,126,0.8), rgba(100,85,130,0.8)); /* Darker purple → dark purple */
+    --chat-input-bg: 270 10% 15%;
+
+    /* Dark gradients - adapted purples */
+    --gradient-main: linear-gradient(135deg, rgba(100,85,130,0.6), rgba(78,70,126,0.6), rgba(89,84,155,0.6));
+    --gradient-primary: linear-gradient(135deg, rgba(100,85,130,0.8), rgba(108,92,140,0.8));
+    --gradient-card: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(100,85,130,0.2));
+    --gradient-sidebar: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(100,85,130,0.2));
+    --gradient-accent: linear-gradient(135deg, rgba(155,96,149,0.6), rgba(108,92,140,0.6));
+    --gradient-hover: linear-gradient(135deg, rgba(78,70,126,0.9), rgba(92,80,135,0.9));
+
+    /* Dark shadows */
+    --shadow-soft: 0 2px 10px -2px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 4px 20px -4px rgba(0, 0, 0, 0.4);
+    --shadow-chat: 0 1px 8px -1px rgba(0, 0, 0, 0.2);
+
+    /* Cursor-responsive gradient variables for dark mode */
+    --cursor-x: 50%;
+    --cursor-y: 50%;
+
+    --sidebar-background: 270 10% 15%;
+    --sidebar-foreground: 270 20% 85%;
+    --sidebar-primary: 270 25% 45%;
+    --sidebar-primary-foreground: 270 20% 85%;
+    --sidebar-accent: 280 30% 25%;
+    --sidebar-accent-foreground: 270 20% 85%;
+    --sidebar-border: 270 15% 25%;
+    --sidebar-ring: 270 25% 45%;
+  }
+}
+
+/* Component Classes */
+@layer components {
+  /* Chat bubble styles with new purple gradients */
+  .chat-bubble-bot {
+    background: var(--chat-bot-bg); /* Pastel Purple → Light Purple gradient */
+    @apply text-foreground rounded-2xl rounded-bl-md p-3 max-w-md shadow-[var(--shadow-chat)] transition-[var(--transition-smooth)];
+  }
+   /* 🔹 Wrapper for each chat message */
+  .chat-message {
+    @apply flex w-full mb-2;
+  }
+
+  /* Bot messages (left aligned) */
+  .chat-message-bot {
+    @apply justify-start;
+  }
+
+  /* User messages (right aligned) */
+  .chat-message-user {
+    @apply justify-end;
+}
+  .chat-bubble-user {
+    background: var(--chat-user-bg); /* Soft Purple → Light Purple gradient */
+    @apply text-foreground rounded-2xl rounded-br-md p-3 max-w-md shadow-[var(--shadow-chat)] transition-[var(--transition-smooth)];
+  }
+
+  /* Sidebar navigation buttons with new gradients */
+  .nav-button {
+    @apply w-full text-left px-4 py-3 rounded-2xl text-sm font-medium transition-[var(--transition-smooth)] flex items-center gap-3 text-foreground hover:shadow-[var(--shadow-soft)];
+  }
+
+  .nav-button:hover {
+    background: var(--gradient-hover); /* Hover gradient */
+  }
+
+  .nav-button-active {
+    background: var(--gradient-primary); /* Primary button gradient */
+    @apply text-foreground shadow-[var(--shadow-medium)] font-semibold;
+  }
+
+  /* Custom gradients */
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-main {
+    background: var(--gradient-main);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .gradient-sidebar {
+    background: var(--gradient-sidebar);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .gradient-hover {
+    background: var(--gradient-hover);
+  }
+
+  /* Visible button styles for both light and dark modes */
+  .btn-visible {
+    background: var(--button-bg) !important;
+    @apply text-white transition-all duration-200 hover:scale-105;
+  }
+
+  .btn-visible:hover {
+    background: var(--button-bg-hover) !important;
+  }
+
+  /* Cursor gradient container styles */
+  .cursor-gradient-container {
+    transition: background 0.1s ease-out;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  .cursor-gradient-dark {
+    background: radial-gradient(
+      circle at var(--cursor-x) var(--cursor-y),
+      rgba(90, 75, 130, 0.8) 0%,
+      rgba(100, 85, 130, 0.6) 25%,
+      rgba(110, 95, 140, 0.4) 50%,
+      rgba(120, 105, 150, 0.2) 75%,
+      rgba(130, 115, 160, 0.1) 100%
+    ) !important;
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-slide-in-left {
+    animation: slideInLeft 0.3s ease-out;
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+  }
+  
+  .animate-bounce-in {
+    animation: bounceIn 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes bounceIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Scrollbar styling for webkit browsers */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
