@@ -5,6 +5,9 @@ import { motion } from "framer-motion"
 import { ShinyText } from "./ShinyText"
 import { useAuth } from "@/context/AuthContext"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { X, Menu, Sun, Moon, LogOut, Wallet as WalletIcon, Coins, PlusCircle } from "lucide-react"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
+import { useEffect, useState } from "react"
 
 interface HeaderProps {
   isSidebarVisible: boolean
@@ -14,6 +17,13 @@ interface HeaderProps {
 export function Header({ isSidebarVisible, toggleSidebar }: HeaderProps) {
   const { theme, setTheme } = useTheme()
   const { isAuthenticated, user, logout } = useAuth()
+  const [coins, setCoins] = useState<number>(() => {
+    const v = localStorage.getItem('sahai_coins')
+    return v ? Number(v) : 0
+  })
+  useEffect(() => {
+    localStorage.setItem('sahai_coins', String(coins))
+  }, [coins])
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light")
@@ -131,6 +141,35 @@ export function Header({ isSidebarVisible, toggleSidebar }: HeaderProps) {
             <Moon className="h-5 w-5" />
           )}
         </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="secondary"
+              className="rounded-xl bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 flex items-center gap-2"
+            >
+              <WalletIcon className="h-5 w-5" />
+              <span className="hidden sm:inline">Sahai Wallet</span>
+              <span className="ml-2 inline-flex items-center rounded-full bg-primary/10 text-primary text-xs font-semibold px-2 py-0.5">{coins}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64">
+            <DropdownMenuLabel className="flex items-center gap-2">
+              <Coins className="h-4 w-4 text-yellow-500" /> Sahai Coin
+            </DropdownMenuLabel>
+            <div className="px-2 pb-2 text-sm text-muted-foreground">Balance</div>
+            <div className="px-2 pb-2 flex items-center gap-2">
+              <div className="h-8 w-8 rounded-full bg-yellow-400/20 flex items-center justify-center">
+                <Coins className="h-4 w-4 text-yellow-500" />
+              </div>
+              <span className="text-lg font-semibold">{coins}</span>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setCoins((c) => c + 5) }}>
+              <PlusCircle className="h-4 w-4 mr-2" /> Claim +5 coins
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {!isAuthenticated ? (
           <div className="hidden sm:flex items-center gap-2">
