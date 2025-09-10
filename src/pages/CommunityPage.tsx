@@ -17,15 +17,46 @@ interface Post {
 
 const STORAGE_KEY = "community_posts";
 
+const defaultPosts: Post[] = [
+  {
+    id: "seed-1",
+    author: "Aisha K.",
+    content:
+      "Day 21 of my breathing routine. Resting heart rate down, sleep up. Mind feels clearer. If you're starting out: 4-7-8 for 5 cycles helped me a lot!",
+    likes: 18,
+    ts: Date.now() - 1000 * 60 * 60 * 6,
+  },
+  {
+    id: "seed-2",
+    author: "Rahul S.",
+    content:
+      "Therapy session #6 today. Anxiety score down ~22% from last month. Small steps add up. Tracking mood daily has been a game changer.",
+    likes: 32,
+    ts: Date.now() - 1000 * 60 * 60 * 26,
+  },
+  {
+    id: "seed-3",
+    author: "Meera P.",
+    content:
+      "Hit a 12‑day streak on mindfulness! I still have tough days but I'm quicker to notice and pause. Proud of this progress.",
+    likes: 25,
+    ts: Date.now() - 1000 * 60 * 60 * 54,
+  },
+];
+
 const CommunityPage = () => {
   const { user } = useAuth();
   const [content, setContent] = useState("");
   const [posts, setPosts] = useState<Post[]>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as Post[]) : [];
+      if (raw) {
+        const parsed = JSON.parse(raw) as Post[];
+        return parsed && parsed.length > 0 ? parsed : defaultPosts;
+      }
+      return defaultPosts;
     } catch {
-      return [];
+      return defaultPosts;
     }
   });
 
