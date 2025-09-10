@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useTheme } from "@/components/ThemeProvider"
 import { useAuth } from "@/context/AuthContext"
+import MoodCheckin from "@/components/MoodCheckin"
 
 const ProfilePage = () => {
   const { theme, setTheme } = useTheme()
@@ -499,6 +500,8 @@ const ProfilePage = () => {
                 )}
               </CardContent>
             </Card>
+
+            <MoodCheckin />
 
             {/* Settings & Preferences */}
             <Card>
