@@ -1,11 +1,10 @@
-import { Moon, Sun, Menu, X, LogOut, User } from "lucide-react"
+import { Moon, Sun, Menu, X, LogOut, Wallet as WalletIcon, Coins, PlusCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "./ThemeProvider"
 import { motion } from "framer-motion"
 import { ShinyText } from "./ShinyText"
 import { useAuth } from "@/context/AuthContext"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { X, Menu, Sun, Moon, LogOut, Wallet as WalletIcon, Coins, PlusCircle } from "lucide-react"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { useEffect, useState } from "react"
 
