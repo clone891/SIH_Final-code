@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { NavLink, useLocation } from "react-router-dom"
 import {
@@ -33,6 +33,7 @@ const navigationItems = [
 export function Sidebar() {
   const location = useLocation()
   const [isScrolled, setIsScrolled] = useState(false)
+  const navRef = useRef<HTMLElement | null>(null)
 
   const itemVariants = {
     initial: { opacity: 0, x: -20 },
@@ -53,24 +54,35 @@ export function Sidebar() {
     setIsScrolled(scrollTop > 10)
   }
 
+  // Ensure the active link is visible when route changes
+  useEffect(() => {
+    const container = navRef.current
+    if (!container) return
+    const active = container.querySelector('.nav-button-active') as HTMLElement | null
+    if (active) {
+      active.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    }
+  }, [location.pathname])
+
   return (
     <motion.aside
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="w-80 border-r border-border flex flex-col gradient-card shadow-[var(--shadow-medium)]"
+      className="w-80 h-full border-r border-border flex flex-col gradient-card shadow-[var(--shadow-medium)]"
     >
       {/* Scrollable Navigation */}
       <nav
-        className="flex-1 overflow-y-auto px-6 py-6 space-y-2 mb-[115px]"
+        ref={navRef}
+        className="flex-1 overflow-y-auto px-6 py-6 space-y-2 m-2"
         onScroll={handleScroll}
         style={{
           background: 'rgba(255, 255, 255, 0.1)',
           backdropFilter: 'blur(20px)',
           borderRadius: '16px',
           border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-          margin: '8px',
-          marginBottom: '123px'
+          boxShadow: isScrolled
+            ? '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 6px 8px -6px rgba(0,0,0,0.25)'
+            : '0 8px 32px rgba(0, 0, 0, 0.1)'
         }}
       >
         <motion.h2
