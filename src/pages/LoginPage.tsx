@@ -82,7 +82,7 @@ export default function LoginPage() {
           <Button type="submit" className="w-full" disabled={submitting || loading}>
             {submitting || loading ? "Signing in..." : "Sign in"}
           </Button>
-          <Button variant="secondary" className="w-full" to="/admin">
+          <Button variant="secondary" className="w-full" to="/admin-login">
             Login as Admin
           </Button>
         </form>
