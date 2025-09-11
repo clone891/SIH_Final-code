@@ -10,6 +10,8 @@ import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAx
 interface Student {
   id: string
   name: string
+  enrollmentNo: string
+  college: string
   department: string
   year: string
   phq9: number
@@ -17,12 +19,12 @@ interface Student {
 }
 
 const initialStudents: Student[] = [
-  { id: "s1", name: "Aarav Shah", department: "Computer Science", year: "3", phq9: 7, lastUpdated: "2025-09-01" },
-  { id: "s2", name: "Isha Gupta", department: "Mechanical", year: "2", phq9: 12, lastUpdated: "2025-09-09" },
-  { id: "s3", name: "Rahul Verma", department: "Electrical", year: "1", phq9: 4, lastUpdated: "2025-09-03" },
-  { id: "s4", name: "Neha Singh", department: "Computer Science", year: "4", phq9: 18, lastUpdated: "2025-09-07" },
-  { id: "s5", name: "Karan Patel", department: "Civil", year: "2", phq9: 9, lastUpdated: "2025-09-05" },
-  { id: "s6", name: "Priya Nair", department: "Computer Science", year: "1", phq9: 2, lastUpdated: "2025-09-10" },
+  { id: "s1", name: "Aarav Shah", enrollmentNo: "CS23A001", college: "Sahai Institute of Technology", department: "Computer Science", year: "3", phq9: 7, lastUpdated: "2025-09-01" },
+  { id: "s2", name: "Isha Gupta", enrollmentNo: "ME22B014", college: "Sahai Institute of Technology", department: "Mechanical", year: "2", phq9: 12, lastUpdated: "2025-09-09" },
+  { id: "s3", name: "Rahul Verma", enrollmentNo: "EE24C007", college: "National College of Engineering", department: "Electrical", year: "1", phq9: 4, lastUpdated: "2025-09-03" },
+  { id: "s4", name: "Neha Singh", enrollmentNo: "CS21D112", college: "Sahai Institute of Technology", department: "Computer Science", year: "4", phq9: 18, lastUpdated: "2025-09-07" },
+  { id: "s5", name: "Karan Patel", enrollmentNo: "CE22E089", college: "National College of Engineering", department: "Civil", year: "2", phq9: 9, lastUpdated: "2025-09-05" },
+  { id: "s6", name: "Priya Nair", enrollmentNo: "CS24F034", college: "City University", department: "Computer Science", year: "1", phq9: 2, lastUpdated: "2025-09-10" },
 ]
 
 function severityBucket(score: number) {
@@ -35,20 +37,25 @@ function severityBucket(score: number) {
 
 export default function AdminDashboardPage() {
   const [query, setQuery] = useState("")
+  const [enrollment, setEnrollment] = useState("")
   const [dept, setDept] = useState("All")
   const [year, setYear] = useState("All")
+  const [college, setCollege] = useState("All")
   const students = initialStudents
 
   const departments = useMemo(() => ["All", ...Array.from(new Set(students.map(s => s.department)))], [students])
+  const colleges = useMemo(() => ["All", ...Array.from(new Set(students.map(s => s.college)))], [students])
   const years = ["All", "1", "2", "3", "4"]
 
   const filtered = useMemo(() => {
     return students.filter(s =>
       (dept === "All" || s.department === dept) &&
       (year === "All" || s.year === year) &&
-      (query.trim() === "" || s.name.toLowerCase().includes(query.toLowerCase()))
+      (college === "All" || s.college === college) &&
+      (query.trim() === "" || s.name.toLowerCase().includes(query.toLowerCase())) &&
+      (enrollment.trim() === "" || s.enrollmentNo.toLowerCase().includes(enrollment.toLowerCase()))
     )
-  }, [students, dept, year, query])
+  }, [students, dept, year, college, query, enrollment])
 
   const dist = useMemo(() => {
     const buckets: Record<string, number> = { "Minimal": 0, "Mild": 0, "Moderate": 0, "Mod. Severe": 0, "Severe": 0 }
@@ -80,10 +87,14 @@ export default function AdminDashboardPage() {
             <CardDescription>Search and segment students</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
               <div className="md:col-span-2">
                 <Label htmlFor="search">Search by name</Label>
                 <Input id="search" placeholder="Type a name" value={query} onChange={(e) => setQuery(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="enrollment">Enrollment No.</Label>
+                <Input id="enrollment" placeholder="e.g. CS23A001" value={enrollment} onChange={(e) => setEnrollment(e.target.value)} />
               </div>
               <div>
                 <Label htmlFor="dept">Department</Label>
@@ -95,6 +106,12 @@ export default function AdminDashboardPage() {
                 <Label htmlFor="year">Year</Label>
                 <select id="year" value={year} onChange={(e) => setYear(e.target.value)} className="w-full h-10 rounded-md border bg-background px-3">
                   {years.map(y => (<option key={y} value={y}>{y}</option>))}
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="college">College</Label>
+                <select id="college" value={college} onChange={(e) => setCollege(e.target.value)} className="w-full h-10 rounded-md border bg-background px-3">
+                  {colleges.map(c => (<option key={c} value={c}>{c}</option>))}
                 </select>
               </div>
             </div>
@@ -147,6 +164,8 @@ export default function AdminDashboardPage() {
                 <thead>
                   <tr className="text-left border-b">
                     <th className="py-2 pr-4">Name</th>
+                    <th className="py-2 pr-4">Enrollment No.</th>
+                    <th className="py-2 pr-4">College</th>
                     <th className="py-2 pr-4">Department</th>
                     <th className="py-2 pr-4">Year</th>
                     <th className="py-2 pr-4">PHQ-9</th>
@@ -161,6 +180,8 @@ export default function AdminDashboardPage() {
                     return (
                       <tr key={s.id} className="border-b last:border-b-0 hover:bg-muted/30">
                         <td className="py-2 pr-4 font-medium">{s.name}</td>
+                        <td className="py-2 pr-4">{s.enrollmentNo}</td>
+                        <td className="py-2 pr-4">{s.college}</td>
                         <td className="py-2 pr-4">{s.department}</td>
                         <td className="py-2 pr-4">{s.year}</td>
                         <td className="py-2 pr-4">{s.phq9}</td>
@@ -174,7 +195,7 @@ export default function AdminDashboardPage() {
                   })}
                   {filtered.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="py-6 text-center text-muted-foreground">No students match the current filters.</td>
+                      <td colSpan={9} className="py-6 text-center text-muted-foreground">No students match the current filters.</td>
                     </tr>
                   )}
                 </tbody>
