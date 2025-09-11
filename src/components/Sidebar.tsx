@@ -12,7 +12,8 @@ import {
   FileText,
   User,
   Gamepad2,
-  MessageSquare
+  MessageSquare,
+  ClipboardList
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -22,6 +23,7 @@ const navigationItems = [
   { id: "progress", path: "/progress", icon: TrendingUp, label: "Your Progress" },
   { id: "booking", path: "/booking", icon: Calendar, label: "Counselling Booking System" },
   { id: "wellness", path: "/wellness", icon: Heart, label: "Wellness Hub" },
+  { id: "phq9", path: "/phq-9", icon: ClipboardList, label: "PHQ-9 Assessment" },
   { id: "support", path: "/support", icon: Users, label: "Peer Support Form" },
   { id: "help", path: "/help", icon: HelpCircle, label: "Health and Support" },
   { id: "community", path: "/community", icon: MessageSquare, label: "Community" },
