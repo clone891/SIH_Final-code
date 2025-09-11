@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { motion } from "framer-motion"
+import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -38,6 +39,7 @@ function severityBucket(score: number) {
 }
 
 export default function AdminDashboardPage() {
+  const navigate = useNavigate()
   const [query, setQuery] = useState("")
   const [enrollment, setEnrollment] = useState("")
   const [dept, setDept] = useState("All")
@@ -62,6 +64,13 @@ export default function AdminDashboardPage() {
   const departments = useMemo(() => ["All", ...Array.from(new Set(students.map(s => s.department)))], [students])
   const colleges = useMemo(() => ["All", ...Array.from(new Set(students.map(s => s.college)))], [students])
   const years = ["All", "1", "2", "3", "4"]
+
+  useEffect(() => {
+    const token = localStorage.getItem("admin_access")
+    if (!token) {
+      navigate("/admin-login", { replace: true })
+    }
+  }, [navigate])
 
   const filtered = useMemo(() => {
     return students.filter(s =>
@@ -188,6 +197,7 @@ export default function AdminDashboardPage() {
             <Button onClick={openAdd} className="rounded-xl"><Plus className="h-4 w-4" /> Add Record</Button>
             <Button variant="secondary" onClick={triggerImport} className="rounded-xl"><Upload className="h-4 w-4" /> Import CSV</Button>
             <Button variant="outline" onClick={exportCsv} className="rounded-xl"><Download className="h-4 w-4" /> Export CSV</Button>
+            <Button onClick={() => { localStorage.removeItem("admin_access"); localStorage.removeItem("admin_refresh"); navigate("/admin-login"); }} className="rounded-xl">Logout</Button>
             <Button onClick={() => window.location.assign("/")} className="rounded-xl">Back to site</Button>
           </div>
         </div>
