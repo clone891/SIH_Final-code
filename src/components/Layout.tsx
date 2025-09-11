@@ -12,7 +12,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const location = useLocation()
-  const hideNavRoutes = ["/", "/login", "/signup"]
+  const hideNavRoutes = ["/", "/login", "/signup", "/admin"]
   const [isSidebarVisible, setIsSidebarVisible] = useState(!hideNavRoutes.includes(location.pathname))
   const { theme } = useTheme()
 
