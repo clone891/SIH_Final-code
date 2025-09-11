@@ -23,6 +23,7 @@ import SummaryPage from "./pages/SummaryPage";
 import ProfilePage from "./pages/ProfilePage";
 import GamifiedDashboardPage from "./pages/GamifiedDashboardPage";
 import CommunityPage from "./pages/CommunityPage";
+import Phq9Page from "./pages/Phq9Page";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const App = () => (
                   <Route path="/help" element={<HelpPage />} />
                   <Route path="/summary" element={<SummaryPage />} />
                   <Route path="/community" element={<CommunityPage />} />
+                  <Route path="/phq-9" element={<Phq9Page />} />
                   <Route path="/gamified-dashboard" element={<GamifiedDashboardPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="*" element={<NotFound />} />
